@@ -1,0 +1,14 @@
+```
+# Arquivos executaveis e de compilacao
+*.exe
+*.o
+*.out
+
+ # Pasta de executaveis
+ executavel/
+
+ # Arquivos de saida do nosso compilador
+ *.pre
+ *.ol
+ *.02
+ ```
