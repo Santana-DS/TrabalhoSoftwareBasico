@@ -1,0 +1,40 @@
+============================================================
+Trabalho 1 de Software Basico - Montador de Passagem Unica
+============================================================
+
+Grupo:
+- Lucas Santana da Silva - 211028097
+- Gabriel Francisco de Oliveira - 202066571
+- Guilherme Miranda de Matos - 221006431
+
+------------------------------------------------------------
+Passo a Passo para Compilar e Executar
+------------------------------------------------------------
+
+1. PRÉ-REQUISITO:
+   - Ter o compilador G++ (MinGW-w64 no Windows) instalado.
+
+2. COMPILANDO:
+   - Abra um terminal NA PASTA RAIZ do projeto (a pasta que contém a subpasta 'codigo_fonte').
+   - Crie a pasta 'executavel' se ela não existir.
+   - Use o comando abaixo para compilar o programa:
+
+     g++ codigo_fonte/*.cpp -o executavel/compilador
+
+3. EXECUTANDO (Exemplo com nosso arquivo de teste):
+   - Para montar o arquivo 'fibonacci.asm' que está na pasta 'exemplos', use o comando abaixo no terminal (ainda na pasta raiz):
+
+     ./executavel/compilador.exe exemplos/fibonacci.asm
+
+4. VERIFICANDO A SAÍDA:
+   - Após a execução, os três arquivos de saída serão criados NA PASTA RAIZ do projeto:
+     - fibonacci.pre
+     - fibonacci.o1
+     - fibonacci.o2
+
+------------------------------------------------------------
+Sobre a regra "Todos os arquivos na mesma pasta":
+------------------------------------------------------------
+O programa foi projetado para seguir esta regra. Não importa de qual subpasta o arquivo de entrada (.asm) venha, os arquivos de saída (.pre, .o1, .o2) serão sempre criados no mesmo local de onde o comando foi executado.
+
+Isso permite que copiando o 'compilador.exe' e um 'teste.asm' para uma pasta vazia, execute o comando de lá, e veja os arquivos de saída aparecerem corretamente nesta mesma pasta.

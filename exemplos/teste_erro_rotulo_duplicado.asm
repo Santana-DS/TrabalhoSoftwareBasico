@@ -1,0 +1,7 @@
+START:
+    LOAD X
+MEU_ROTULO:
+    ADD X
+MEU_ROTULO:
+    STOP
+X: SPACE
