@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cctype>
 
+// Protótipos das funções auxiliares
 std::vector<std::string> tokenizar_montador(const std::string& linha);
 void popular_tabela_instrucoes(TabelaInstrucoes& ti);
 bool is_number(const std::string& s);
@@ -16,7 +17,7 @@ bool is_label_valido(const std::string& s);
 void executar_montagem(const std::string& nome_arquivo_pre) {
     TabelaInstrucoes tabela_instrucoes;
     popular_tabela_instrucoes(tabela_instrucoes);
-
+    
     TabelaSimbolos tabela_simbolos;
     ListaPendencias lista_pendencias;
     std::vector<int> codigo_objeto;
@@ -51,7 +52,7 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
             } else {
                 tabela_simbolos[nome_rotulo_upper] = {nome_rotulo_upper, contador_posicao, true};
             }
-
+            
             tokens.erase(tokens.begin());
             if (tokens.empty()) continue;
 
@@ -61,7 +62,7 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
                 continue;
             }
         }
-
+        
         std::string op_upper = tokens[0];
         std::transform(op_upper.begin(), op_upper.end(), op_upper.begin(), ::toupper);
 
@@ -99,25 +100,32 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
             houve_erro = true;
         }
     }
-
+    
     for (const auto& pendencia : lista_pendencias) {
         if (!tabela_simbolos.count(pendencia.simbolo)) {
             std::cerr << "Erro Semantico: O rotulo '" << pendencia.simbolo << "' foi usado mas nunca declarado." << std::endl;
             houve_erro = true;
         }
     }
-
+    
     if (houve_erro) {
         std::cout << "\nErros encontrados. A montagem foi interrompida." << std::endl;
         return;
     }
 
     std::string nome_base = obter_nome_base(nome_arquivo_pre);
+    
     std::string nome_arquivo_o1 = nome_base + ".o1";
     std::ofstream arquivo_o1(nome_arquivo_o1);
+    arquivo_o1 << "CODIGO OBJETO INTERMEDIARIO:" << std::endl;
     for(const auto& val : codigo_objeto) arquivo_o1 << val << " ";
+    arquivo_o1 << std::endl << "\nLISTA DE PENDENCIAS:" << std::endl;
+    for(const auto& p : lista_pendencias) {
+        arquivo_o1 << "Simbolo: " << p.simbolo << ", Endereco a corrigir (indice): " << p.endereco_a_corrigir << std::endl;
+    }
     arquivo_o1.close();
-
+    
+    // --- RESOLUÇÃO DE PENDÊNCIAS ---
     for (const auto& pendencia : lista_pendencias) {
         codigo_objeto[pendencia.endereco_a_corrigir] = tabela_simbolos.at(pendencia.simbolo).endereco;
     }
@@ -128,7 +136,7 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
         arquivo_o2 << codigo_objeto[i] << (i == codigo_objeto.size() - 1 ? "" : " ");
     }
     arquivo_o2.close();
-
+    
     std::cout << "Arquivos '" << nome_arquivo_o1 << "' e '" << nome_arquivo_o2 << "' gerados com sucesso." << std::endl;
 }
 

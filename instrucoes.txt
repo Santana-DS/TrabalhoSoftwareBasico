@@ -1,6 +1,8 @@
 ============================================================
 Trabalho 1 de Software Basico - Montador de Passagem Unica
 ============================================================
+https://github.com/Santana-DS/TrabalhoSoftwareBasico
+============================================================
 
 Grupo:
 - Lucas Santana da Silva - 211028097
@@ -12,29 +14,34 @@ Passo a Passo para Compilar e Executar
 ------------------------------------------------------------
 
 1. PRÉ-REQUISITO:
-   - Ter o compilador G++ (MinGW-w64 no Windows) instalado.
+   - Ter o compilador G++ instalado e funcionando no terminal.
+     (Ex: MinGW-w64 no Windows, pacote 'build-essential' no Linux).
 
 2. COMPILANDO:
-   - Abra um terminal NA PASTA RAIZ do projeto (a pasta que contém a subpasta 'codigo_fonte').
-   - Crie a pasta 'executavel' se ela não existir.
-   - Use o comando abaixo para compilar o programa:
+   - Abra um terminal na pasta raiz do projeto.
+   - Execute o comando de compilação. Este comando é universal para Windows e Linux:
 
      g++ codigo_fonte/*.cpp -o executavel/compilador
 
-3. EXECUTANDO (Exemplo com nosso arquivo de teste):
-   - Para montar o arquivo 'fibonacci.asm' que está na pasta 'exemplos', use o comando abaixo no terminal (ainda na pasta raiz):
+3. EXECUTANDO:
+   - O programa foi projetado para que os arquivos de saída (.pre, .o1, .o2) sejam sempre criados na pasta de onde o comando é executado.
+   - No terminal (ainda na pasta raiz), use o comando apropriado para o seu sistema:
 
-     ./executavel/compilador.exe exemplos/fibonacci.asm
+   - NO WINDOWS (PowerShell/CMD):
+     (O executável é 'compilador.exe')
+     .\executavel\compilador.exe exemplos/seu_arquivo_de_teste.asm
 
-4. VERIFICANDO A SAÍDA:
-   - Após a execução, os três arquivos de saída serão criados NA PASTA RAIZ do projeto:
-     - fibonacci.pre
-     - fibonacci.o1
-     - fibonacci.o2
+   - NO LINUX (Bash):
+     (O executável é 'compilador', sem extensão)
+     ./executavel/compilador exemplos/seu_arquivo_de_teste.asm
+
+4. SAÍDAS:
+   - Os arquivos de saída (.pre, .o1, .o2) aparecerão na pasta raiz do projeto.
 
 ------------------------------------------------------------
-Sobre a regra "Todos os arquivos na mesma pasta":
+Nota Importante para Usuários Linux:
 ------------------------------------------------------------
-O programa foi projetado para seguir esta regra. Não importa de qual subpasta o arquivo de entrada (.asm) venha, os arquivos de saída (.pre, .o1, .o2) serão sempre criados no mesmo local de onde o comando foi executado.
-
-Isso permite que copiando o 'compilador.exe' e um 'teste.asm' para uma pasta vazia, execute o comando de lá, e veja os arquivos de saída aparecerem corretamente nesta mesma pasta.
+O sistema de arquivos do Linux diferencia maiúsculas de minúsculas (case-sensitive).
+Este projeto utiliza nomes de arquivos e #includes em minúsculas (ex: "montador.h").
+Certifique-se de que os nomes dos arquivos não foram alterados para conter letras maiúsculas,
+pois isso pode causar erros de compilação ("file not found") no Linux.
