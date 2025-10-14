@@ -19,24 +19,28 @@ Passo a Passo para Compilar e Executar
 
 2. COMPILANDO:
    - Abra um terminal na pasta raiz do projeto.
+   - Se não existir, crie a pasta "executavel" dentro da pasta raiz. 
    - Execute o comando de compilação. Este comando é universal para Windows e Linux:
 
-     g++ codigo_fonte/*.cpp -o executavel/compilador
+     g++ ./codigo_fonte/*.cpp -o executavel/compilador
 
 3. EXECUTANDO:
-   - O programa foi projetado para que os arquivos de saída (.pre, .o1, .o2) sejam sempre criados na pasta de onde o comando é executado.
+   - O programa foi projetado todos arquivos de entrada saída (.pre, .o1, .o2) estejam na mesma pasta do arquivo executável.  
    - No terminal (ainda na pasta raiz), use o comando apropriado para o seu sistema:
 
    - NO WINDOWS (PowerShell/CMD):
      (O executável é 'compilador.exe')
-     .\executavel\compilador.exe exemplos/seu_arquivo_de_teste.asm
+     ./executavel/compilador.exe executavel/seu_arquivo.asm
 
    - NO LINUX (Bash):
      (O executável é 'compilador', sem extensão)
-     ./executavel/compilador exemplos/seu_arquivo_de_teste.asm
-
+     ./executavel/compilador executavel/seu_arquivo.asm
+     
+   - 	Um exemplo (no Windows) com os arquivos de teste na pasta testes: 
+   	./executavel/compilador.exe testes/area_triangulo.asm; ./executavel/compilador.exe testes/fibonacci.asm
+	
 4. SAÍDAS:
-   - Os arquivos de saída (.pre, .o1, .o2) aparecerão na pasta raiz do projeto.
+   - Os arquivos de saída (.pre, .o1, .o2) aparecerão na pasta './executavel' do projeto.
 
 ------------------------------------------------------------
 Nota Importante para Usuários Linux:

@@ -1,0 +1,9 @@
+; --- MULTIPLICA 25 POR 2 USANDO SOMA ---
+; Resultado esperado em X: 50
+
+X: CONST 25
+
+LOAD X
+ADD X
+STORE X
+STOP

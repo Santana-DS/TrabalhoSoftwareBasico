@@ -1,0 +1,7 @@
+
+X: CONST 25
+
+LOAD X
+ADD X
+STORE X
+STOP

@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <cctype>
 
-// Protótipos das funções auxiliares
 std::vector<std::string> tokenizar_montador(const std::string& linha);
 void popular_tabela_instrucoes(TabelaInstrucoes& ti);
 bool is_number(const std::string& s);
@@ -26,72 +25,65 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
     bool houve_erro = false;
 
     std::ifstream arquivo_pre(nome_arquivo_pre);
-    if (!arquivo_pre.is_open()) {
-        std::cerr << "Erro: Nao foi possivel abrir o arquivo .pre '" << nome_arquivo_pre << "'." << std::endl;
-        return;
-    }
+    if (!arquivo_pre.is_open()) { return; }
 
     std::string linha;
     while (std::getline(arquivo_pre, linha)) {
         contador_linha++;
-        std::vector<std::string> tokens = tokenizar_montador(linha);
-        if (tokens.empty()) continue;
-
-        if (tokens[0].back() == ':') {
-            std::string nome_rotulo = tokens[0].substr(0, tokens[0].length() - 1);
+        
+        std::string linha_sem_comentario = linha.substr(0, linha.find(';'));
+        std::string parte_instrucao;
+        
+        size_t pos_colon = linha_sem_comentario.find(':');
+        
+        if (pos_colon != std::string::npos) {
+            std::string nome_rotulo = trim(linha_sem_comentario.substr(0, pos_colon));
             std::string nome_rotulo_upper = nome_rotulo;
             std::transform(nome_rotulo_upper.begin(), nome_rotulo_upper.end(), nome_rotulo_upper.begin(), ::toupper);
 
-            if (!is_label_valido(nome_rotulo)) {
-                std::cerr << "Erro Lexico (linha " << contador_linha << "): Rotulo '" << nome_rotulo << "' invalido." << std::endl;
-                houve_erro = true;
-            }
-            if (tabela_simbolos.count(nome_rotulo_upper) && tabela_simbolos.at(nome_rotulo_upper).definido) {
-                std::cerr << "Erro Semantico (linha " << contador_linha << "): Rotulo '" << nome_rotulo << "' declarado duas vezes." << std::endl;
-                houve_erro = true;
-            } else {
-                tabela_simbolos[nome_rotulo_upper] = {nome_rotulo_upper, contador_posicao, true};
-            }
-            
-            tokens.erase(tokens.begin());
-            if (tokens.empty()) continue;
-
-            if (tokens[0].back() == ':') {
-                std::cerr << "Erro Sintatico (linha " << contador_linha << "): Dois rotulos na mesma linha." << std::endl;
-                houve_erro = true;
-                continue;
-            }
+            if (!is_label_valido(nome_rotulo)) { houve_erro = true; }
+            if (tabela_simbolos.count(nome_rotulo_upper) && tabela_simbolos.at(nome_rotulo_upper).definido) { houve_erro = true; } 
+            else { tabela_simbolos[nome_rotulo_upper] = {nome_rotulo_upper, contador_posicao, true}; }
+            parte_instrucao = linha_sem_comentario.substr(pos_colon + 1);
+        } else {
+            parte_instrucao = linha_sem_comentario;
         }
+
+        std::vector<std::string> tokens = tokenizar_montador(parte_instrucao);
+        if (tokens.empty()) continue;
         
         std::string op_upper = tokens[0];
         std::transform(op_upper.begin(), op_upper.end(), op_upper.begin(), ::toupper);
-
+        
         if (tabela_instrucoes.count(op_upper)) {
             const auto& instrucao = tabela_instrucoes.at(op_upper);
-            if ((tokens.size() - 1) != instrucao.operandos_esperados) {
-                 std::cerr << "Erro Sintatico (linha " << contador_linha << "): Instrucao '" << op_upper << "' espera " << instrucao.operandos_esperados << " operando(s), mas recebeu " << tokens.size() - 1 << "." << std::endl;
-                 houve_erro = true;
-            } else {
+            if ((tokens.size() - 1) != instrucao.operandos_esperados) { houve_erro = true; } 
+            else {
                 codigo_objeto.push_back(instrucao.opcode);
                 for (int i = 0; i < instrucao.operandos_esperados; ++i) {
                     std::string operando = tokens[i + 1];
-                    if (operando.back() == ',') {
-                        operando.pop_back();
-                    }
-                    if (is_number(operando)) {
-                        codigo_objeto.push_back(std::stoi(operando));
-                    } else {
-                        std::transform(operando.begin(), operando.end(), operando.begin(), ::toupper);
+                    if (operando.back() == ',') operando.pop_back();
+                    if (is_number(operando)) { codigo_objeto.push_back(std::stoi(operando)); } 
+                    else {
+                        std::string simbolo_base = operando;
+                        int offset = 0;
+                        size_t pos_soma = operando.find('+');
+                        if (pos_soma != std::string::npos) {
+                            simbolo_base = operando.substr(0, pos_soma);
+                            offset = std::stoi(operando.substr(pos_soma + 1));
+                        }
+                        std::transform(simbolo_base.begin(), simbolo_base.end(), simbolo_base.begin(), ::toupper);
                         int endereco_pendencia = codigo_objeto.size();
-                        codigo_objeto.push_back(0);
-                        lista_pendencias.push_back({operando, endereco_pendencia});
+                        codigo_objeto.push_back(offset);
+                        lista_pendencias.push_back({simbolo_base, endereco_pendencia});
                     }
                 }
             }
             contador_posicao += 1 + instrucao.operandos_esperados;
         } else if (op_upper == "SPACE") {
-            codigo_objeto.push_back(0);
-            contador_posicao += 1;
+            int espacos = (tokens.size() > 1 && is_number(tokens[1])) ? std::stoi(tokens[1]) : 1;
+            for(int i = 0; i < espacos; ++i) codigo_objeto.push_back(0);
+            contador_posicao += espacos;
         } else if (op_upper == "CONST") {
             codigo_objeto.push_back(std::stoi(tokens[1]));
             contador_posicao += 1;
@@ -101,70 +93,32 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
         }
     }
     
-    for (const auto& pendencia : lista_pendencias) {
-        if (!tabela_simbolos.count(pendencia.simbolo)) {
-            std::cerr << "Erro Semantico: O rotulo '" << pendencia.simbolo << "' foi usado mas nunca declarado." << std::endl;
-            houve_erro = true;
-        }
-    }
-    
-    if (houve_erro) {
-        std::cout << "\nErros encontrados. A montagem foi interrompida." << std::endl;
-        return;
-    }
+    for (const auto& p : lista_pendencias) { if (!tabela_simbolos.count(p.simbolo)) { std::cerr << "Erro Semantico: O rotulo '" << p.simbolo << "' foi usado mas nunca declarado." << std::endl; houve_erro = true; } }
+    if (houve_erro) { std::cout << "\nErros encontrados. A montagem foi interrompida." << std::endl; return; }
 
-    std::string nome_base = obter_nome_base(nome_arquivo_pre);
-    
-    std::string nome_arquivo_o1 = nome_base + ".o1";
-    std::ofstream arquivo_o1(nome_arquivo_o1);
-    arquivo_o1 << "CODIGO OBJETO INTERMEDIARIO:" << std::endl;
-    for(const auto& val : codigo_objeto) arquivo_o1 << val << " ";
-    arquivo_o1 << std::endl << "\nLISTA DE PENDENCIAS:" << std::endl;
-    for(const auto& p : lista_pendencias) {
-        arquivo_o1 << "Simbolo: " << p.simbolo << ", Endereco a corrigir (indice): " << p.endereco_a_corrigir << std::endl;
+    std::string dir_path = "";
+    size_t pos_barra = nome_arquivo_pre.find_last_of("/\\");
+    if (pos_barra != std::string::npos) {
+        dir_path = nome_arquivo_pre.substr(0, pos_barra + 1);
     }
+    std::string nome_base = obter_nome_base(nome_arquivo_pre);
+    std::string nome_arquivo_o1 = dir_path + nome_base + ".o1";
+    std::string nome_arquivo_o2 = dir_path + nome_base + ".o2";
+
+    std::ofstream arquivo_o1(nome_arquivo_o1);
+    for(const auto& val : codigo_objeto) arquivo_o1 << val << " ";
     arquivo_o1.close();
     
-    // --- RESOLUÇÃO DE PENDÊNCIAS ---
-    for (const auto& pendencia : lista_pendencias) {
-        codigo_objeto[pendencia.endereco_a_corrigir] = tabela_simbolos.at(pendencia.simbolo).endereco;
-    }
-
-    std::string nome_arquivo_o2 = nome_base + ".o2";
+    for (const auto& p : lista_pendencias) { codigo_objeto[p.endereco_a_corrigir] += tabela_simbolos.at(p.simbolo).endereco; }
+    
     std::ofstream arquivo_o2(nome_arquivo_o2);
-    for (size_t i = 0; i < codigo_objeto.size(); ++i) {
-        arquivo_o2 << codigo_objeto[i] << (i == codigo_objeto.size() - 1 ? "" : " ");
-    }
+    for (size_t i = 0; i < codigo_objeto.size(); ++i) { arquivo_o2 << codigo_objeto[i] << (i == codigo_objeto.size() - 1 ? "" : " "); }
     arquivo_o2.close();
     
     std::cout << "Arquivos '" << nome_arquivo_o1 << "' e '" << nome_arquivo_o2 << "' gerados com sucesso." << std::endl;
 }
 
-std::vector<std::string> tokenizar_montador(const std::string& linha) {
-    std::vector<std::string> tokens;
-    std::string codigo_sem_comentario = linha.substr(0, linha.find(';'));
-    std::istringstream iss(codigo_sem_comentario);
-    std::string token;
-    while (iss >> token) tokens.push_back(token);
-    return tokens;
-}
-
-void popular_tabela_instrucoes(TabelaInstrucoes& ti) {
-    ti["ADD"] = {"ADD", 1, 1}; ti["SUB"] = {"SUB", 2, 1}; ti["MULT"] = {"MULT", 3, 1};
-    ti["DIV"] = {"DIV", 4, 1}; ti["JMP"] = {"JMP", 5, 1}; ti["JMPN"] = {"JMPN", 6, 1};
-    ti["JMPP"] = {"JMPP", 7, 1}; ti["JMPZ"] = {"JMPZ", 8, 1};
-    ti["COPY"] = {"COPY", 9, 2}; ti["LOAD"] = {"LOAD", 10, 1}; ti["STORE"] = {"STORE", 11, 1};
-    ti["INPUT"] = {"INPUT", 12, 1}; ti["OUTPUT"] = {"OUTPUT", 13, 1}; ti["STOP"] = {"STOP", 14, 0};
-}
-
-bool is_number(const std::string& s) {
-    if (s.empty()) return false;
-    for (char const &c : s) if (std::isdigit(c) == 0) return false;
-    return true;
-}
-
-bool is_label_valido(const std::string& s) {
-    if (s.empty() || !(std::isalpha(s[0]) || s[0] == '_')) return false;
-    for (char const &c : s) if (!(std::isalnum(c) || c == '_')) return false;
-    return true;
-}
+std::vector<std::string> tokenizar_montador(const std::string& linha) { std::vector<std::string> tokens; std::istringstream iss(trim(linha)); std::string token; while (iss >> token) tokens.push_back(token); return tokens; }
+void popular_tabela_instrucoes(TabelaInstrucoes& ti) { ti["ADD"] = {"ADD", 1, 1}; ti["SUB"] = {"SUB", 2, 1}; ti["MULT"] = {"MULT", 3, 1}; ti["DIV"] = {"DIV", 4, 1}; ti["JMP"] = {"JMP", 5, 1}; ti["JMPN"] = {"JMPN", 6, 1}; ti["JMPP"] = {"JMPP", 7, 1}; ti["JMPZ"] = {"JMPZ", 8, 1}; ti["COPY"] = {"COPY", 9, 2}; ti["LOAD"] = {"LOAD", 10, 1}; ti["STORE"] = {"STORE", 11, 1}; ti["INPUT"] = {"INPUT", 12, 1}; ti["OUTPUT"] = {"OUTPUT", 13, 1}; ti["STOP"] = {"STOP", 14, 0}; }
+bool is_number(const std::string& s) { if (s.empty()) return false; for (char const &c : s) if (std::isdigit(c) == 0) return false; return true; }
+bool is_label_valido(const std::string& s) { if (s.empty() || !(std::isalpha(s[0]) || s[0] == '_')) return false; for (char const &c : s) if (!(std::isalnum(c) || c == '_')) return false; return true; }

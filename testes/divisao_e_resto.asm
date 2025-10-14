@@ -1,0 +1,25 @@
+; --- DIVISAO E RESTO (13 / 3) ---
+; Quociente esperado em QUOCIENTE: 4
+; Resto esperado em RESTO: 1
+
+DIVIDENDO:  CONST 13
+DIVISOR:    CONST 3
+QUOCIENTE:  SPACE
+RESTO:      SPACE
+
+; --- Código ---
+; Calcula o quociente
+LOAD DIVIDENDO
+DIV DIVISOR
+STORE QUOCIENTE
+
+; Calcula o resto: RESTO = DIVIDENDO - (QUOCIENTE * DIVISOR)
+LOAD QUOCIENTE
+MULT DIVISOR
+STORE RESTO      ; RESTO agora tem (QUOCIENTE * DIVISOR)
+
+LOAD DIVIDENDO
+SUB RESTO
+STORE RESTO      ; RESTO agora tem o valor final
+
+STOP
