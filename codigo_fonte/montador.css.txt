@@ -1,7 +1,3 @@
-/**
- * @file montador.cpp
- * @brief Implementação do montador de passagem única com lista de pendências.
- */
 #include "montador.h"
 #include "estruturas.h"
 #include "utilitarios.h"
@@ -12,16 +8,15 @@
 #include <algorithm>
 #include <cctype>
 
-// --- PROTÓTIPOS DAS FUNÇÕES AUXILIARES ---
 std::vector<std::string> tokenizar_montador(const std::string& linha);
 void popular_tabela_instrucoes(TabelaInstrucoes& ti);
 bool is_number(const std::string& s);
 bool is_label_valido(const std::string& s);
 
 void executar_montagem(const std::string& nome_arquivo_pre) {
-    // --- 1. INICIALIZAÇÃO ---
     TabelaInstrucoes tabela_instrucoes;
     popular_tabela_instrucoes(tabela_instrucoes);
+    
     TabelaSimbolos tabela_simbolos;
     ListaPendencias lista_pendencias;
     std::vector<int> codigo_objeto;
@@ -32,7 +27,6 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
     std::ifstream arquivo_pre(nome_arquivo_pre);
     if (!arquivo_pre.is_open()) { return; }
 
-    // --- 2. PASSAGEM ÚNICA ---
     std::string linha;
     while (std::getline(arquivo_pre, linha)) {
         contador_linha++;
@@ -102,7 +96,6 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
     for (const auto& p : lista_pendencias) { if (!tabela_simbolos.count(p.simbolo)) { std::cerr << "Erro Semantico: O rotulo '" << p.simbolo << "' foi usado mas nunca declarado." << std::endl; houve_erro = true; } }
     if (houve_erro) { std::cout << "\nErros encontrados. A montagem foi interrompida." << std::endl; return; }
 
-    // --- 3. GERAÇÃO DOS ARQUIVOS DE SAÍDA ---
     std::string dir_path = "";
     size_t pos_barra = nome_arquivo_pre.find_last_of("/\\");
     if (pos_barra != std::string::npos) {
@@ -112,60 +105,20 @@ void executar_montagem(const std::string& nome_arquivo_pre) {
     std::string nome_arquivo_o1 = dir_path + nome_base + ".o1";
     std::string nome_arquivo_o2 = dir_path + nome_base + ".o2";
 
-    // --- LÓGICA CORRIGIDA E RESTAURADA PARA O ARQUIVO .o1 ---
     std::ofstream arquivo_o1(nome_arquivo_o1);
-    arquivo_o1 << "CODIGO OBJETO INTERMEDIARIO:" << std::endl;
-    for(const auto& val : codigo_objeto) {
-        arquivo_o1 << val << " ";
-    }
-    arquivo_o1 << std::endl << "\nLISTA DE PENDENCIAS:" << std::endl;
-    for(const auto& p : lista_pendencias) {
-        arquivo_o1 << "Simbolo: " << p.simbolo << ", Endereco a corrigir (indice): " << p.endereco_a_corrigir << std::endl;
-    }
+    for(const auto& val : codigo_objeto) arquivo_o1 << val << " ";
     arquivo_o1.close();
     
-    // Resolução de Pendências
-    for (const auto& p : lista_pendencias) { 
-        codigo_objeto[p.endereco_a_corrigir] += tabela_simbolos.at(p.simbolo).endereco; 
-    }
+    for (const auto& p : lista_pendencias) { codigo_objeto[p.endereco_a_corrigir] += tabela_simbolos.at(p.simbolo).endereco; }
     
-    // Geração do arquivo .o2
     std::ofstream arquivo_o2(nome_arquivo_o2);
-    for (size_t i = 0; i < codigo_objeto.size(); ++i) { 
-        arquivo_o2 << codigo_objeto[i] << (i == codigo_objeto.size() - 1 ? "" : " "); 
-    }
+    for (size_t i = 0; i < codigo_objeto.size(); ++i) { arquivo_o2 << codigo_objeto[i] << (i == codigo_objeto.size() - 1 ? "" : " "); }
     arquivo_o2.close();
     
     std::cout << "Arquivos '" << nome_arquivo_o1 << "' e '" << nome_arquivo_o2 << "' gerados com sucesso." << std::endl;
 }
 
-// --- DEFINIÇÕES DAS FUNÇÕES AUXILIARES ---
-// (Estas funções estão completas e não precisam de mudança)
-
-std::vector<std::string> tokenizar_montador(const std::string& linha) { 
-    std::vector<std::string> tokens; 
-    std::istringstream iss(trim(linha)); 
-    std::string token; 
-    while (iss >> token) tokens.push_back(token); 
-    return tokens; 
-}
-
-void popular_tabela_instrucoes(TabelaInstrucoes& ti) { 
-    ti["ADD"] = {"ADD", 1, 1}; ti["SUB"] = {"SUB", 2, 1}; ti["MULT"] = {"MULT", 3, 1}; 
-    ti["DIV"] = {"DIV", 4, 1}; ti["JMP"] = {"JMP", 5, 1}; ti["JMPN"] = {"JMPN", 6, 1}; 
-    ti["JMPP"] = {"JMPP", 7, 1}; ti["JMPZ"] = {"JMPZ", 8, 1}; ti["COPY"] = {"COPY", 9, 2}; 
-    ti["LOAD"] = {"LOAD", 10, 1}; ti["STORE"] = {"STORE", 11, 1}; ti["INPUT"] = {"INPUT", 12, 1}; 
-    ti["OUTPUT"] = {"OUTPUT", 13, 1}; ti["STOP"] = {"STOP", 14, 0}; 
-}
-
-bool is_number(const std::string& s) { 
-    if (s.empty()) return false; 
-    for (char const &c : s) if (std::isdigit(c) == 0) return false; 
-    return true; 
-}
-
-bool is_label_valido(const std::string& s) { 
-    if (s.empty() || !(std::isalpha(s[0]) || s[0] == '_')) return false; 
-    for (char const &c : s) if (!(std::isalnum(c) || c == '_')) return false; 
-    return true; 
-}
+std::vector<std::string> tokenizar_montador(const std::string& linha) { std::vector<std::string> tokens; std::istringstream iss(trim(linha)); std::string token; while (iss >> token) tokens.push_back(token); return tokens; }
+void popular_tabela_instrucoes(TabelaInstrucoes& ti) { ti["ADD"] = {"ADD", 1, 1}; ti["SUB"] = {"SUB", 2, 1}; ti["MULT"] = {"MULT", 3, 1}; ti["DIV"] = {"DIV", 4, 1}; ti["JMP"] = {"JMP", 5, 1}; ti["JMPN"] = {"JMPN", 6, 1}; ti["JMPP"] = {"JMPP", 7, 1}; ti["JMPZ"] = {"JMPZ", 8, 1}; ti["COPY"] = {"COPY", 9, 2}; ti["LOAD"] = {"LOAD", 10, 1}; ti["STORE"] = {"STORE", 11, 1}; ti["INPUT"] = {"INPUT", 12, 1}; ti["OUTPUT"] = {"OUTPUT", 13, 1}; ti["STOP"] = {"STOP", 14, 0}; }
+bool is_number(const std::string& s) { if (s.empty()) return false; for (char const &c : s) if (std::isdigit(c) == 0) return false; return true; }
+bool is_label_valido(const std::string& s) { if (s.empty() || !(std::isalpha(s[0]) || s[0] == '_')) return false; for (char const &c : s) if (!(std::isalnum(c) || c == '_')) return false; return true; }

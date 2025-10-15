@@ -1,1 +1,18 @@
+CODIGO OBJETO INTERMEDIARIO:
 10 2 0 0 1 0 0 10 0 4 0 11 0 10 0 3 0 11 0 10 0 2 0 8 0 10 0 11 0 5 0 10 0 11 0 14 
+
+LISTA DE PENDENCIAS:
+Simbolo: A, Endereco a corrigir (indice): 8
+Simbolo: B, Endereco a corrigir (indice): 10
+Simbolo: QUOCIENTE, Endereco a corrigir (indice): 12
+Simbolo: QUOCIENTE, Endereco a corrigir (indice): 14
+Simbolo: B, Endereco a corrigir (indice): 16
+Simbolo: TEMP, Endereco a corrigir (indice): 18
+Simbolo: A, Endereco a corrigir (indice): 20
+Simbolo: TEMP, Endereco a corrigir (indice): 22
+Simbolo: EH_MULTIPLO, Endereco a corrigir (indice): 24
+Simbolo: ZERO, Endereco a corrigir (indice): 26
+Simbolo: RESULTADO, Endereco a corrigir (indice): 28
+Simbolo: FIM, Endereco a corrigir (indice): 30
+Simbolo: UM, Endereco a corrigir (indice): 32
+Simbolo: RESULTADO, Endereco a corrigir (indice): 34

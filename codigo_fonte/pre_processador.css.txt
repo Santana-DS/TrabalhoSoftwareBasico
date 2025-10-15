@@ -1,5 +1,5 @@
 #include "pre_processador.h"
-#include "utilitarios.h"
+#include "utilitarios.h" // Adicionado
 #include <iostream>
 #include <fstream>
 #include <sstream>

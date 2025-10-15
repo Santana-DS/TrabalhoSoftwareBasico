@@ -1,0 +1,16 @@
+CODIGO OBJETO INTERMEDIARIO:
+-5 0 100 10 0 2 0 7 0 10 0 2 0 6 0 5 0 10 0 11 0 5 0 10 0 11 0 14 
+
+LISTA DE PENDENCIAS:
+Simbolo: VALOR_TESTE, Endereco a corrigir (indice): 4
+Simbolo: MAX, Endereco a corrigir (indice): 6
+Simbolo: CORRIGE_MAXIMO, Endereco a corrigir (indice): 8
+Simbolo: VALOR_TESTE, Endereco a corrigir (indice): 10
+Simbolo: MIN, Endereco a corrigir (indice): 12
+Simbolo: CORRIGE_MINIMO, Endereco a corrigir (indice): 14
+Simbolo: FIM, Endereco a corrigir (indice): 16
+Simbolo: MAX, Endereco a corrigir (indice): 18
+Simbolo: VALOR_TESTE, Endereco a corrigir (indice): 20
+Simbolo: FIM, Endereco a corrigir (indice): 22
+Simbolo: MIN, Endereco a corrigir (indice): 24
+Simbolo: VALOR_TESTE, Endereco a corrigir (indice): 26

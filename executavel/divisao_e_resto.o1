@@ -1,1 +1,13 @@
+CODIGO OBJETO INTERMEDIARIO:
 13 3 0 0 10 0 4 0 11 0 10 0 3 0 11 0 10 0 2 0 11 0 14 
+
+LISTA DE PENDENCIAS:
+Simbolo: DIVIDENDO, Endereco a corrigir (indice): 5
+Simbolo: DIVISOR, Endereco a corrigir (indice): 7
+Simbolo: QUOCIENTE, Endereco a corrigir (indice): 9
+Simbolo: QUOCIENTE, Endereco a corrigir (indice): 11
+Simbolo: DIVISOR, Endereco a corrigir (indice): 13
+Simbolo: RESTO, Endereco a corrigir (indice): 15
+Simbolo: DIVIDENDO, Endereco a corrigir (indice): 17
+Simbolo: RESTO, Endereco a corrigir (indice): 19
+Simbolo: RESTO, Endereco a corrigir (indice): 21

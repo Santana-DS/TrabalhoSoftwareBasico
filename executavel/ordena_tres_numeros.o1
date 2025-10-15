@@ -1,1 +1,31 @@
+CODIGO OBJETO INTERMEDIARIO:
 5 2 8 0 10 0 2 0 6 0 10 0 11 0 10 0 11 0 10 0 11 0 10 0 2 0 6 0 10 0 11 0 10 0 11 0 10 0 11 0 10 0 2 0 6 0 10 0 11 0 10 0 11 0 10 0 11 0 14 
+
+LISTA DE PENDENCIAS:
+Simbolo: A, Endereco a corrigir (indice): 5
+Simbolo: B, Endereco a corrigir (indice): 7
+Simbolo: PULAR_TROCA_AB, Endereco a corrigir (indice): 9
+Simbolo: A, Endereco a corrigir (indice): 11
+Simbolo: T, Endereco a corrigir (indice): 13
+Simbolo: B, Endereco a corrigir (indice): 15
+Simbolo: A, Endereco a corrigir (indice): 17
+Simbolo: T, Endereco a corrigir (indice): 19
+Simbolo: B, Endereco a corrigir (indice): 21
+Simbolo: B, Endereco a corrigir (indice): 23
+Simbolo: C, Endereco a corrigir (indice): 25
+Simbolo: PULAR_TROCA_BC, Endereco a corrigir (indice): 27
+Simbolo: B, Endereco a corrigir (indice): 29
+Simbolo: T, Endereco a corrigir (indice): 31
+Simbolo: C, Endereco a corrigir (indice): 33
+Simbolo: B, Endereco a corrigir (indice): 35
+Simbolo: T, Endereco a corrigir (indice): 37
+Simbolo: C, Endereco a corrigir (indice): 39
+Simbolo: A, Endereco a corrigir (indice): 41
+Simbolo: B, Endereco a corrigir (indice): 43
+Simbolo: FIM, Endereco a corrigir (indice): 45
+Simbolo: A, Endereco a corrigir (indice): 47
+Simbolo: T, Endereco a corrigir (indice): 49
+Simbolo: B, Endereco a corrigir (indice): 51
+Simbolo: A, Endereco a corrigir (indice): 53
+Simbolo: T, Endereco a corrigir (indice): 55
+Simbolo: B, Endereco a corrigir (indice): 57
