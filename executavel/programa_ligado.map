@@ -1,0 +1,29 @@
+--- INICIANDO LIGACAO ---
+Arquivo de Saida: executavel/programa_ligado.exe
+Arquivo de Mapa: executavel/programa_ligado.map
+Arquivos de Entrada:
+  - executavel/modulo_main.obj
+  - executavel/modulo_func.obj
+
+Iniciando Passagem 1 (Construcao da Tabela Global de Simbolos)...
+
+Verificando simbolos externos (Tabela de Usos)...
+
+--- Tabela Global de Simbolos (FINAL) ---
+Simbolo: ARG1, Endereco: 17
+Simbolo: ARG2, Endereco: 18
+Simbolo: RET, Endereco: 10
+Simbolo: SOMA, Endereco: 20
+-------------------------------------------
+
+Iniciando Passagem 2 (Relocacao e Geracao de Codigo)...
+  > Etapa 2a: Unindo codigo...
+  > Etapa 2b: Aplicando relocacao...
+    > Relocado simbolo 'SOMA' no endereco 9. (Valor adicionado: 20)
+    > Relocado simbolo 'ARG1' no endereco 21. (Valor adicionado: 17)
+    > Relocado simbolo 'ARG2' no endereco 23. (Valor adicionado: 18)
+    > Relocado simbolo 'RET' no endereco 25. (Valor adicionado: 10)
+
+Gerando arquivo de saida: executavel/programa_ligado.exe
+
+Ligacao concluida com sucesso!

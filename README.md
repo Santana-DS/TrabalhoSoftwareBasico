@@ -1,141 +1,147 @@
------
+Você tem razão, a formatação do Markdown pode ser instável no console. Peço desculpas por isso.
 
-# 🚀 Montador de Passagem Única - Disciplina de Software Básico
+Aqui está o **texto puro** para o `README.md`. Por favor, copie e cole este conteúdo diretamente no seu arquivo, substituindo tudo o que estava lá. A formatação simples com indentação deve funcionar perfeitamente.
+
+--- (Início do README.md) ---
+
+# 🚀 Montador de Passagem Única & Cadeia de Ferramentas - Disciplina de Software Básico
 
 ## 📖 Visão Geral
 
-Este projeto é a implementação de um **Montador** (Assembler) de passagem única para uma linguagem Assembly hipotética, desenvolvido como requisito para a disciplina de **Software Básico** da Universidade de Brasília (UnB). O programa simula as duas primeiras fases de um sistema de processamento de linguagens: o **Pré-processamento** (com foco em macros) e a **Montagem** (tradução de Assembly para "código de máquina").
+Este projeto é a implementação de uma cadeia de ferramentas de software básico para uma linguagem Assembly hipotética, desenvolvido como requisito para a disciplina de **Software Básico** da Universidade de Brasília (UnB).
 
-O objetivo principal foi solidificar os conceitos fundamentais sobre a arquitetura de computadores, a estrutura de linguagens de baixo nível e os algoritmos que permitem a transformação de código legível por humanos em código executável por uma máquina.
+O sistema evoluiu de um simples montador para uma cadeia completa, consistindo em:
+
+1.  **Pré-Processador:** Expande macros, incluindo chamadas aninhadas e com parâmetros.
+2.  **Montador (`compilador.exe`):** Um montador de passagem única que opera em dois modos:
+    * **Modo Absoluto:** Gera código objeto absoluto (`.o1`, `.o2`) para um único arquivo.
+    * **Modo Relocável (`-c`):** Gera código objeto relocável (`.obj`) para múltiplos módulos, suportando `PUBLIC` e `EXTERN`.
+3.  **Ligador (`ligador.exe`):** Um ligador de duas passagens que combina múltiplos arquivos `.obj`, resolve referências externas e gera um único executável (`.exe`) e um arquivo de mapa (`.map`).
+4.  **Simulador (`simulador.exe`):** Um simulador de CPU que carrega o executável final na memória (com suporte a offset) e o executa, salvando o log de saída em um arquivo (`.log`).
 
 ## ✨ Funcionalidades Principais
 
-  * **Pré-processador Robusto:**
-      * Suporte para definição de até duas macros por arquivo.
-      * Expansão de macros com até dois argumentos.
-      * **Resolução de Macros Aninhadas:** Capacidade de uma macro chamar outra, com o pré-processador resolvendo as expansões em múltiplos passos.
-  * **Montador de Passagem Única:**
-      * Implementação do algoritmo clássico de *single-pass* com **Lista de Pendências** para resolver referências a rótulos futuros (*forward references*).
-      * Suporte para diretivas como `SPACE` (reserva de memória) e `CONST` (definição de constantes).
-  * **Detecção Abrangente de Erros:**
-      * **Erros Léxicos:** Validação de nomes de rótulos (não podem começar com números, caracteres especiais limitados).
-      * **Erros Sintáticos:** Verificação de número de operandos, instruções inexistentes e múltiplos rótulos por linha.
-      * **Erros Semânticos:** Detecção de rótulos duplicados e uso de rótulos não declarados.
-  * **Flexibilidade e Tolerância:**
-      * O parser é *case-insensitive* (entende `LOAD`, `load` e `LoAd` da mesma forma).
-      * Ignora espaços, tabulações e quebras de linha desnecessárias.
-
------
-
-## 🧠 A Jornada Conceitual: O Que Aprendemos?
-
-Este projeto foi uma imersão profunda nos mecanismos que operam "sob o capô" da computação. Aqui estão os principais conceitos que exploramos e implementamos.
-
-### 1\. Compiladores vs. Montadores
-
-Embora o trabalho use o termo "compilador", o que construímos é, tecnicamente, um **Montador** (Assembler). A diferença é crucial:
-
-  * Um **Compilador** traduz uma linguagem de alto nível (como C++) para uma de baixo nível (Assembly).
-  * Um **Montador** traduz uma linguagem Assembly (com mnemônicos como `ADD`, `MULT`) para código de máquina (números, como `1`, `3`).
-    Nosso projeto faz exatamente o segundo.
-
-### 2\. Fase 1: O Pré-Processador e a Magia das Macros
-
-Macros são ferramentas poderosas para automação e reutilização de código. Aprendemos que o pré-processamento é, em essência, uma **transformação textual inteligente**.
-
-  * **O Desafio das Macros Aninhadas:** O requisito de uma macro poder chamar outra nos forçou a ir além de uma simples substituição. Uma única passagem de expansão não seria suficiente. A solução foi implementar um **loop de expansão iterativo**: o pré-processador reavalia o código gerado continuamente, expandindo macros camada por camada, até que nenhuma chamada de macro reste no código.
-
-### 3\. Fase 2: O Coração do Projeto - O Montador de Passagem Única
-
-O maior desafio de um montador de passagem única é responder à pergunta: "Como saber o endereço de um rótulo que ainda não foi lido?".
-
-  * **A Lista de Pendências:** A solução para este problema é a elegante **Lista de Pendências**. Funciona como uma lista de "promessas" ou "tarefas a fazer".
-
-    1.  Ao encontrar uma instrução que usa um rótulo futuro (ex: `JMP LOOP_FUTURO`), o montador não entra em pânico.
-    2.  Ele gera o código de máquina com um espaço reservado (um `0`) no lugar do endereço.
-    3.  Ele anota em sua Lista de Pendências: "Quando eu descobrir o endereço de `LOOP_FUTURO`, preciso voltar e preenchê-lo na posição X do código".
-    4.  Ao final da leitura do arquivo, ele percorre essa lista e cumpre todas as promessas, preenchendo as lacunas.
-
-  * **As Tabelas Fundamentais:** Para se organizar, o montador depende de estruturas de dados essenciais:
-
-      * **Tabela de Instruções (TI):** Nosso "dicionário" da linguagem. Mapeia cada mnemônico (`ADD`, `LOAD`) para seu opcode, tamanho e número de operandos.
-      * **Tabela de Símbolos (TS):** Nosso "catálogo de endereços". Armazena cada rótulo definido no código e o endereço de memória correspondente.
+* **Pré-processador Robusto:** Suporte para definição e expansão de macros aninhadas.
+* **Montador de Modo Duplo:**
+    * **Modo Absoluto:** Gera arquivos `.o1` e `.o2` conforme os requisitos originais.
+    * **Modo Relocável:** Entende `PUBLIC` e `EXTERN` e gera Tabelas de Uso, Definição e Relocação.
+* **Ligador de Duas Passagens:**
+    * Constrói uma Tabela Global de Símbolos.
+    * Resolve referências externas entre módulos usando as Tabelas de Uso e Definição.
+    * Gera um executável final e um `.map` com o log detalhado da ligação.
+* **Simulador de CPU:**
+    * Carrega o programa em um endereço de memória (padrão `0` ou um offset definido pelo usuário).
+    * Simula uma CPU com Acumulador (`ACC`) e Contador de Programa (`PC`).
+    * Executa o código e salva todos os `OUTPUT`s e erros em um arquivo `.log`.
+* **Detecção Abrangente de Erros:** O sistema detecta erros léxicos, sintáticos (ex: `OPCODE` inexistente), semânticos (ex: símbolo duplicado) e de ligação (ex: símbolo externo não resolvido).
 
 -----
 
 ## 📂 Estrutura do Projeto
 
-```
 .
 ├── codigo_fonte/
-│   ├── main.cpp
-│   ├── estruturas.h
-│   ├── utilitarios.h
-│   ├── pre_processador.h
+│   ├── main.cpp            (Orquestrador do Montador)
 │   ├── pre_processador.cpp
-│   ├── montador.h
-│   └── montador.cpp
+│   ├── montador.cpp        (Lógica do Montador - Modos Absoluto e Relocável)
+│   ├── ligador.cpp         (Lógica do Ligador)
+│   ├── simulador.cpp       (Lógica do Carregador e Simulador)
+│   ├── estruturas.h        (Structs de Símbolos, Pendências, Relocação)
+│   └── utilitarios.h       (Funções 'trim' e 'obter_nome_base')
 │
 ├── executavel/
-│   └── (Local do compilador.exe gerado)
+│   ├── compilador.exe      (Montador/Pré-processador)
+│   ├── ligador.exe
+│   └── simulador.exe
 │
 ├── exemplos/
-│   ├── teste_completo.asm
-│   ├── teste_sintaxe_flexivel.asm
-│   ├── fibonacci.asm
-│   ├── area_triangulo.asm
-│   └── (outros testes .asm)
+│   ├── fibonacci.asm       (Exemplo de arquivo único)
+│   ├── modulo_a.asm        (Exemplo de múltiplos módulos)
+│   ├── modulo_b.asm
+│   └── modulo_c.asm
 │
-└── instrucoes.txt
-```
+└── README.md
 
 -----
 
-## ⚙️ Como Compilar e Executar
+## ⚙️ Como Compilar
 
-Siga este passo a passo para compilar e rodar o programa.
+Siga este passo a passo para compilar os **três executáveis** do sistema.
 
 **1. Pré-requisito:**
+   - Ter o compilador G++ (MinGW-w64 no Windows ou `build-essential` no Linux) instalado.
 
-  - Ter o compilador G++ (MinGW-w64 no Windows ou `build-essential` no Linux) instalado e acessível no terminal.
+**2. Compilando (PowerShell/Bash):**
+   - Abra um terminal na **pasta raiz** do projeto.
+   - Crie a pasta `executavel` se ela não existir.
+   - Execute os três comandos de compilação separadamente:
 
-**2. Compilando:**
+     # Compila o Montador
+     g++ codigo_fonte/main.cpp codigo_fonte/pre_processador.cpp codigo_fonte/montador.cpp -o executavel/compilador.exe
 
-  - Abra um terminal na **pasta raiz** do projeto.
-  - Crie a pasta `executavel` se ela não existir.
-  - Use o seguinte comando, que compila todos os arquivos `.cpp` de uma só vez:
-    ```bash
-    g++ codigo_fonte/*.cpp -o executavel/compilador
-    ```
+     # Compila o Ligador
+     g++ codigo_fonte/ligador.cpp -o executavel/ligador.exe
 
-**3. Executando (Exemplo Prático):**
-
-  - Para montar o arquivo `teste_completo.asm`, use o comando abaixo (ainda na pasta raiz):
-    ```bash
-    ./executavel/compilador.exe exemplos/teste_completo.asm
-    ```
-
-**4. Verificando as Saídas:**
-
-  - Após a execução, os três arquivos de saída serão criados na **pasta raiz** do projeto, conforme a regra de execução:
-      - `teste_completo.pre`
-      - `teste_completo.o1`
-      - `teste_completo.o2`
+     # Compila o Simulador
+     g++ codigo_fonte/simulador.cpp -o executavel/simulador.exe
 
 -----
 
-## 📜 Arquivos de Saída
+## 🚀 Guia de Uso
 
-O programa gera três arquivos, cada um representando uma etapa do processo:
+Existem dois fluxos de trabalho principais:
 
-  * **`arquivo.pre`:** O código-fonte após a fase de pré-processamento. Todas as macros foram expandidas, resultando em um código Assembly "puro".
-  * **`arquivo.o1`:** A saída intermediária da passagem única. Contém o código objeto com zeros nos locais de pendências e a lista de pendências em si, mostrando quais símbolos precisam ser resolvidos e em quais endereços.
-  * **`arquivo.o2`:** O código objeto final. Todas as pendências foram resolvidas, e o arquivo contém a sequência de números pronta para ser "carregada" e "executada" por uma máquina hipotética.
+### 1. Fluxo de Trabalho: Modo Absoluto (Arquivo Único)
 
------
+Este fluxo usa apenas o `compilador.exe` e o `simulador.exe` para montar e rodar um único arquivo `.asm` (cumprindo os requisitos originais da disciplina).
 
-## 👨‍💻 Autores
+**1. Montar (Modo Absoluto):**
+   ./executavel/compilador.exe exemplos/fibonacci.asm
+   
+   * **Saída:** `executavel/fibonacci.pre`, `executavel/fibonacci.o1`, `executavel/fibonacci.o2`.
 
-  * **Lucas Santana da Silva** - 211028097
-  * **Gabriel Francisco de Oliveira** - 202066571
-  * **Guilherme Miranda de Matos** - 221006431
+**2. Executar:**
+   ./executavel/simulador.exe executavel/fibonacci.o2
+   
+   * **Saída:** `fibonacci.log` (contendo os `OUTPUT`s do programa).
+
+---
+
+### 2. Fluxo de Trabalho: Cadeia Completa (Múltiplos Módulos)
+
+Este é o fluxo avançado que usa toda a cadeia de ferramentas.
+
+**1. Montar Módulos (Modo Relocável):**
+   Use o flag `-c` para compilar cada módulo `.asm` em um arquivo `.obj`.
+   
+   ./executavel/compilador.exe -c exemplos/modulo_a.asm
+   ./executavel/compilador.exe -c exemplos/modulo_b.asm
+   ./executavel/compilador.exe -c exemplos/modulo_c.asm
+   
+   * **Saída:** `executavel/modulo_a.obj`, `executavel/modulo_b.obj`, `executavel/modulo_c.obj`.
+
+**2. Ligar Módulos:**
+   Use o `ligador.exe` para combinar os arquivos `.obj` em um executável final (`.exe`) e gerar o arquivo de mapa (`.map`).
+   
+   ./executavel/ligador.exe -o executavel/area.exe -m executavel/area.map executavel/modulo_a.obj executavel/modulo_b.obj executavel/modulo_c.obj
+   
+   * **Saída:** `executavel/area.exe` (o programa final) e `executavel/area.map` (o log de ligação).
+
+**3. Simular o Executável Final:**
+   Use o `simulador.exe` para carregar e rodar o programa ligado.
+   
+   ./executavel/simulador.exe executavel/area.exe
+   
+   * **O que acontece:** O programa pedirá os 6 `INPUT`s.
+   * **Saída:** `area.log` (contendo os `OUTPUT`s ou erros de execução).
+
+**4. (Opcional) Simular com Offset:**
+   Para carregar o programa no endereço de memória `2000`:
+   
+   ./executavel/simulador.exe executavel/area.exe 2000
+
+--- (Fim do README.md) ---
+
+Isso conclui a **Sugestão 2**.
+
+Agora, podemos implementar a última melhoria de "clareza" que discutimos: adicionar os menus de ajuda (`-h` ou `--help`) aos três executáveis?
