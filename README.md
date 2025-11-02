@@ -84,16 +84,18 @@ Siga este passo a passo para compilar os **três executáveis** do sistema.
 
 ### 2. Compilando (PowerShell/Bash)
 
-Abra um terminal na **pasta raiz** do projeto e execute:
-
+#### 🧱 1. Compila o Montador (`compilador.exe`)
 ```bash
-# 1. Compila o Montador (compilador.exe)
 g++ codigo_fonte/main.cpp codigo_fonte/pre_processador.cpp codigo_fonte/montador.cpp -o executavel/compilador.exe
+```
 
-# 2. Compila o Ligador (ligador.exe)
+#### 🔗 2. Compila o Ligador (`ligador.exe`)
+```bash
 g++ codigo_fonte/ligador.cpp -o executavel/ligador.exe
+```
 
-# 3. Compila o Simulador (simulador.exe)
+#### ⚙️ 3. Compila o Simulador (`simulador.exe`)
+```bash
 g++ codigo_fonte/simulador.cpp -o executavel/simulador.exe
 ```
 
