@@ -1,5 +1,5 @@
 ============================================================
-Trabalho 1 de Software Basico - Montador de Passagem Unica
+Trabalho 1 de Software Basico - Montador, Ligador e Simulador
 ============================================================
 https://github.com/Santana-DS/TrabalhoSoftwareBasico
 ============================================================
@@ -10,42 +10,154 @@ Grupo:
 - Guilherme Miranda de Matos - 221006431
 
 ------------------------------------------------------------
-Passo a Passo para Compilar e Executar
+1. COMO COMPILAR A CADEIA DE FERRAMENTAS
 ------------------------------------------------------------
 
-1. PRÉ-REQUISITO:
-   - Ter o compilador G++ instalado e funcionando no terminal.
-     (Ex: MinGW-w64 no Windows, pacote 'build-essential' no Linux).
+1.1. Pré-requisito:
+   - Ter o compilador G++ (MinGW-w64 no Windows ou build-essential no Linux) instalado.
 
-2. COMPILANDO:
+1.2. Compilando:
    - Abra um terminal na pasta raiz do projeto.
-   - Se não existir, crie a pasta "executavel" dentro da pasta raiz. 
-   - Execute o comando de compilação. Este comando é universal para Windows e Linux:
+   - Se não existir, crie a pasta "executavel".
+   - Execute os TRÊS comandos abaixo, um de cada vez:
 
-     g++ codigo_fonte/*.cpp -o executavel/compilador
+   --- NO WINDOWS (PowerShell/CMD): ---
+   (Isso criará .exe)
 
-3. EXECUTANDO:
-   - O programa foi projetado todos arquivos de entrada e saída (.pre, .o1, .o2) estejam na mesma pasta do arquivo executável.  
-   - No terminal (ainda na pasta raiz), use o comando apropriado para o seu sistema:
+   # 1. Compila o Montador
+   g++ codigo_fonte/main.cpp codigo_fonte/pre_processador.cpp codigo_fonte/montador.cpp -o executavel/compilador.exe
 
-   - NO WINDOWS (PowerShell/CMD):
-     (O executável é 'compilador.exe')
-     ./executavel/compilador.exe executavel/seu_arquivo.asm
+   # 2. Compila o Ligador
+   g++ codigo_fonte/ligador.cpp -o executavel/ligador.exe
 
-   - NO LINUX (Bash):
-     (O executável é 'compilador', sem extensão)
-     ./executavel/compilador executavel/seu_arquivo.asm
-     
-   - 	Um exemplo (no Windows) com dois dos arquivos de teste na pasta testes: 
-   	./executavel/compilador.exe testes/area_triangulo.asm; ./executavel/compilador.exe testes/fibonacci.asm
-	
-4. SAÍDAS:
-   - Os arquivos de saída (.pre, .o1, .o2) aparecerão na pasta './executavel' do projeto.
+   # 3. Compila o Simulador
+   g++ codigo_fonte/simulador.cpp -o executavel/simulador.exe
+
+   
+   --- NO LINUX (Bash): ---
+   (Isso criará arquivos binários sem extensão)
+
+   # 1. Compila o Montador
+   g++ codigo_fonte/main.cpp codigo_fonte/pre_processador.cpp codigo_fonte/montador.cpp -o executavel/compilador
+
+   # 2. Compila o Ligador
+   g++ codigo_fonte/ligador.cpp -o executavel/ligador
+
+   # 3. Compila o Simulador
+   g++ codigo_fonte/simulador.cpp -o executavel/simulador
+
 
 ------------------------------------------------------------
-Nota Importante para Usuários Linux:
+2. USO: FUNCIONALIDADES ORIGINAIS (REQUISITOS DA DISCIPLINA)
 ------------------------------------------------------------
-O sistema de arquivos do Linux diferencia maiúsculas de minúsculas (case-sensitive).
-Este projeto utiliza nomes de arquivos e #includes em minúsculas (ex: "montador.h").
-Certifique-se de que os nomes dos arquivos não foram alterados para conter letras maiúsculas,
-pois isso pode causar erros de compilação ("file not found") no Linux.
+Este fluxo gera os arquivos .pre, .o1 e .o2 a partir de um 
+único arquivo .asm.
+Ele NÃO usa o ligador ou o simulador.
+Supondo que "arquivo.asm" esteja na pasta "./executavel":
+
+--- NO WINDOWS: ---
+./executavel/compilador.exe ./executavel/[arquivo.asm]
+# Exemplo :
+./executavel/compilador.exe exemplos/fibonacci.asm
+
+--- NO LINUX: ---
+./executavel/compilador ./executavel/[arquivo.asm]
+# Exemplo :
+./executavel/compilador exemplos/fibonacci.asm
+
+--- Saídas Geradas (na pasta /executavel): ---
+* fibonacci.pre: O código-fonte com macros expandidas.
+* fibonacci.o1: O código objeto intermediário, *antes* da resolução da Lista de Pendências (mostrando os símbolos e onde são usados).
+* fibonacci.o2: O código objeto absoluto final, *após* a resolução da Lista de Pendências.
+
+(Nota: O .o2 gerado por este fluxo não é compatível com o simulador,
+pois o simulador espera o formato de saída do ligador).
+
+------------------------------------------------------------
+3. USO: FUNCIONALIDADES ADICIONAIS (CADEIA COMPLETA)
+------------------------------------------------------------
+Este fluxo usa todas as ferramentas para montar, ligar e 
+simular um programa completo a partir de múltiplos módulos.
+
+--- Etapa 3.1: Montar os Módulos ---
+
+Use o flag "-c" para compilar cada módulo em um arquivo .obj 
+relocável (habilitando PUBLIC/EXTERN).
+Supondo que os modulos.asm estejam na pasta "./executavel":
+
+   --- NO WINDOWS: ---
+   ./executavel/compilador.exe -c ./executavel/[modulo1.asm]
+   ./executavel/compilador.exe -c ./executavel/[modulo2.asm]
+
+   # Exemplo :
+   ./executavel/compilador.exe -c exemplos/modulo_a.asm
+   ./executavel/compilador.exe -c exemplos/modulo_b.asm
+   ./executavel/compilador.exe -c exemplos/modulo_c.asm
+
+   --- NO LINUX: ---
+   ./executavel/compilador -c ./executavel/[modulo1.asm]
+   ./executavel/compilador -c ./executavel/[modulo2.asm]
+
+   # Exemplo :
+   ./executavel/compilador -c exemplos/modulo_a.asm
+   ./executavel/compilador -c exemplos/modulo_b.asm
+   ./executavel/compilador -c exemplos/modulo_c.asm
+
+--- Etapa 3.2: Ligar os Módulos ---
+
+Use o "ligador.exe" para combinar os arquivos .obj.
+* -o [saida.exe]: Especifica o arquivo executável final.
+* -m [saida.map]: Especifica o arquivo de mapa (log da ligação).
+
+   --- NO WINDOWS: ---
+   ./executavel/ligador.exe -o executavel/[saida.exe] -m executavel/[saida.map] executavel/[modulo1.obj] executavel/[modulo2.obj] ...
+   
+   # Exemplo :
+   ./executavel/ligador.exe -o executavel/area.exe -m executavel/area.map executavel/modulo_a.obj executavel/modulo_b.obj executavel/modulo_c.obj
+
+   --- NO LINUX: ---
+   ./executavel/ligador -o executavel/[saida.exe] -m executavel/[saida.map] executavel/[modulo1.obj] executavel/[modulo2.obj] ...
+   
+   # Exemplo :
+   ./executavel/ligador -o executavel/area -m executavel/area.map executavel/modulo_a.obj executavel/modulo_b.obj executavel/modulo_c.obj
+
+--- Etapa 3.3: Simular o Executável Final ---
+
+Use o "simulador.exe" para carregar e executar o programa.
+O [endereco_base] é opcional (o padrão é 0).
+
+   --- NO WINDOWS: ---
+   ./executavel/simulador.exe executavel/[arquivo.exe] [endereco_base_opcional]
+   
+   # Exemplo : Carregando no endereço 211028097 (nº de matrícula)
+   ./executavel/simulador.exe executavel/area.exe 211028097
+
+   --- NO LINUX: ---
+   ./executavel/simulador executavel/[arquivo] [endereco_base_opcional]
+   
+   # Exemplo : Carregando no endereço 211028097 (nº de matrícula)
+   ./executavel/simulador executavel/area 211028097
+
+--- Saída da Simulação: ---
+O programa pedirá os INPUTS no console. O resultado final, incluindo 
+o "código máquina ligado e carregado" e os OUTPUTs, será salvo 
+em um arquivo .log (ex: "executavel/area.log").
+
+------------------------------------------------------------
+4. OPÇÕES DE AJUDA E DEPURAÇÃO
+------------------------------------------------------------
+
+--- Menus de Ajuda (-h ou --help): ---
+Para ver detalhes e a sintaxe de qualquer ferramenta:
+
+   ./executavel/compilador.exe -h
+   ./executavel/ligador.exe -h
+   ./executavel/simulador.exe -h
+
+--- Modos de Depuração do Simulador: ---
+Use estes flags *antes* do nome do arquivo.
+
+* -d (Debug/Trace): Gera um log passo a passo de cada instrução executada.
+./executavel/simulador.exe -d executavel/[arquivo.exe] [endereco_base]
+* -dump (Disassembly): Apenas carrega e desmonta a memória para o log (NÃO executa).
+./executavel/simulador.exe -dump executavel/[arquivo.exe] [endereco_base]

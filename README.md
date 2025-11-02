@@ -80,6 +80,7 @@ O projeto foi construído em duas fases principais:
 
 Abra um terminal na **pasta raiz** do projeto.  
 Crie a pasta `executavel` se ela não existir.  
+NO LINUX (Bash): sem extensão .exe.
 Execute os comandos abaixo:
 
 #### 🧱 Compila o Montador (`compilador.exe`)
@@ -200,4 +201,5 @@ Flags:
 ```bash
 ./executavel/simulador.exe -d executavel/area.exe 21028097
 ```
+
 
