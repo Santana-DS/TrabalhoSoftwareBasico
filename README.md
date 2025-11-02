@@ -10,154 +10,198 @@ O projeto foi construído em duas fases principais:
 
 2. **Cadeia de Ferramentas Estendida (Funcionalidades Adicionais):** O projeto foi expandido para uma cadeia de ferramentas completa, incluindo um ligador e um simulador, permitindo o desenvolvimento com múltiplos módulos.
 
+---
+
 ## ✨ Funcionalidades
 
 ### 📜 Funcionalidades Originais (Requisitos da Disciplina)
 
-* **Pré-processador de Macros:** Suporte completo para definição e expansão de macros com argumentos, incluindo macros aninhadas.
-* **Montador de Passagem Única:** Implementa o algoritmo clássico de *single-pass* com Lista de Pendências para resolver referências a rótulos futuros (*forward references*) dentro de um único arquivo.
-* **Geração de Saídas (`.o1`, `.o2`):** Gera o arquivo `.o1` com o código objeto intermediário e a lista de pendências, e o `.o2` com o código objeto absoluto resolvido.
+- **Pré-processador de Macros:** Suporte completo para definição e expansão de macros com argumentos, incluindo macros aninhadas.
+- **Montador de Passagem Única:** Implementa o algoritmo clássico de *single-pass* com Lista de Pendências para resolver referências a rótulos futuros (*forward references*) dentro de um único arquivo.
+- **Geração de Saídas (`.o1`, `.o2`):** Gera o arquivo `.o1` com o código objeto intermediário e a lista de pendências, e o `.o2` com o código objeto absoluto resolvido.
 
 ### ✨ Funcionalidades Adicionais (Cadeia de Ferramentas Completa)
 
-* **Montador de Modo Duplo (`compilador.exe`):**
-  * Opera em **Modo Absoluto** (padrão) para os requisitos da disciplina.
-  * Opera em **Modo Relocável** (com *flag* `-c`) para gerar arquivos `.obj` para o ligador.
-  * Suporte às diretivas `PUBLIC` e `EXTERN` para referências cruzadas entre módulos.
-  * Gera Tabelas de Uso, Definições e Relocação (Interna e Externa) nos arquivos `.obj`.
+- **Montador de Modo Duplo (`compilador.exe`):**
+  - Opera em **Modo Absoluto** (padrão) para os requisitos da disciplina.
+  - Opera em **Modo Relocável** (com flag `-c`) para gerar arquivos `.obj` para o ligador.
+  - Suporte às diretivas `PUBLIC` e `EXTERN` para referências cruzadas entre módulos.
+  - Gera Tabelas de Uso, Definições e Relocação (Interna e Externa) nos arquivos `.obj`.
 
-* **Ligador (`ligador.exe`):**
-  * Implementa um **ligador de duas passagens** que combina múltiplos arquivos `.obj`.
-  * Constrói uma Tabela Global de Símbolos para resolver referências externas.
-  * Gera um **Arquivo de Mapa (`.map`)** detalhado com o log completo da ligação.
-  * Gera um arquivo executável relocável (`.exe`) final.
+- **Ligador (`ligador.exe`):**
+  - Implementa um **ligador de duas passagens** que combina múltiplos arquivos `.obj`.
+  - Constrói uma Tabela Global de Símbolos para resolver referências externas.
+  - Gera um **Arquivo de Mapa (`.map`)** detalhado com o log completo da ligação.
+  - Gera um arquivo executável relocável (`.exe`) final.
 
-* **Simulador de CPU (`simulador.exe`):**
-  * **Carregador Relocável:** Carrega o `.exe` final e aplica o "fator de correção" (endereço base) a todos os operandos marcados, permitindo que o programa seja carregado em *qualquer* endereço de memória.
-  * **Memória Esparsa:** Utiliza `std::map` para simular a memória, permitindo endereços muito grandes (ex: `211028097`) sem causar estouro de memória.
-  * **Execução de CPU:** Simula uma CPU com Acumulador (`ACC`) e Contador de Programa (`PC`) para executar o código carregado.
-  * **Log de Saída:** Salva *todo* o resultado da execução (desmontagem da memória, `OUTPUT`s e erros) em um arquivo `.log`.
-  * **Modos de Depuração:** Suporta os *flags* `-d` (trace de execução) e `-dump` (apenas desmontagem).
+- **Simulador de CPU (`simulador.exe`):**
+  - **Carregador Relocável:** Carrega o `.exe` final e aplica o "fator de correção" (endereço base) a todos os operandos marcados, permitindo que o programa seja carregado em *qualquer* endereço de memória.
+  - **Memória Esparsa:** Utiliza `std::map` para simular a memória, permitindo endereços muito grandes (ex: `211028097`) sem causar estouro de memória.
+  - **Execução de CPU:** Simula uma CPU com Acumulador (`ACC`) e Contador de Programa (`PC`) para executar o código carregado.
+  - **Log de Saída:** Salva *todo* o resultado da execução (desmontagem da memória, `OUTPUT`s e erros) em um arquivo `.log`.
+  - **Modos de Depuração:** Suporta os flags `-d` (trace de execução) e `-dump` (apenas desmontagem).
 
-* **Interface de Usuário:**
-  * Todos os três executáveis (`compilador.exe`, `ligador.exe`, `simulador.exe`) possuem menus de ajuda (`-h` ou `--help`).
+- **Interface de Usuário:**
+  - Todos os três executáveis (`compilador.exe`, `ligador.exe`, `simulador.exe`) possuem menus de ajuda (`-h` ou `--help`).
 
------
+---
 
 ## 📂 Estrutura do Projeto
 
-```
-codigo_fonte/
-│
-├── main.cpp                 # Orquestrador do Montador
-├── pre_processador.cpp
-├── montador.cpp             # Lógica do Montador - Modos Absoluto e Relocável
-├── ligador.cpp              # Lógica do Ligador
-├── simulador.cpp            # Lógica do Carregador e Simulador
-├── estruturas.h             # Structs de Símbolos, Pendências, Relocação
-└── utilitarios.h            # Funções auxiliares ('trim', 'obter_nome_base')
+- **codigo_fonte/**
+  - `main.cpp` (Orquestrador do Montador)
+  - `pre_processador.cpp`
+  - `montador.cpp` (Lógica do Montador - Modos Absoluto e Relocável)
+  - `ligador.cpp` (Lógica do Ligador)
+  - `simulador.cpp` (Lógica do Carregador e Simulador)
+  - `estruturas.h` (Structs de Símbolos, Pendências, Relocação)
+  - `utilitarios.h` (Funções utilitárias como 'trim' e 'obter_nome_base')
+- **executavel/**
+  - `compilador.exe` (Montador/Pré-processador)
+  - `ligador.exe`
+  - `simulador.exe`
+- **exemplos/**
+  - `fibonacci.asm` (Exemplo de arquivo único)
+  - `modulo_a.asm`
+  - `modulo_b.asm`
+  - `modulo_c.asm`
+- `instrucoes.txt`
+- `README.md`
 
-executavel/
-├── compilador.exe
-├── ligador.exe
-└── simulador.exe
-
-exemplos/
-├── fibonacci.asm
-├── modulo_a.asm
-├── modulo_b.asm
-└── modulo_c.asm
-
-instrucoes.txt
-README.md
-```
-
------
+---
 
 ## ⚙️ Como Compilar
 
-Siga este passo a passo para compilar os **três executáveis** do sistema.
-
 ### 1. Pré-requisito
 
-- Ter o compilador G++ (MinGW-w64 no Windows ou `build-essential` no Linux) instalado.
+- Ter o compilador **G++** (MinGW-w64 no Windows ou `build-essential` no Linux) instalado.
 
 ### 2. Compilando (PowerShell/Bash)
 
-#### 🧱 1. Compila o Montador (`compilador.exe`)
+Abra um terminal na **pasta raiz** do projeto.  
+Crie a pasta `executavel` se ela não existir.  
+Execute os comandos abaixo:
+
+#### 🧱 Compila o Montador (`compilador.exe`)
 ```bash
 g++ codigo_fonte/main.cpp codigo_fonte/pre_processador.cpp codigo_fonte/montador.cpp -o executavel/compilador.exe
 ```
 
-#### 🔗 2. Compila o Ligador (`ligador.exe`)
+#### 🔗 Compila o Ligador (`ligador.exe`)
 ```bash
 g++ codigo_fonte/ligador.cpp -o executavel/ligador.exe
 ```
 
-#### ⚙️ 3. Compila o Simulador (`simulador.exe`)
+#### ⚙️ Compila o Simulador (`simulador.exe`)
 ```bash
 g++ codigo_fonte/simulador.cpp -o executavel/simulador.exe
 ```
 
------
+---
 
 ## 🚀 Guia de Uso
 
-O sistema suporta dois fluxos de trabalho distintos.
+O sistema suporta dois fluxos de trabalho distintos.  
+Para ver a ajuda de qualquer comando, use `-h` ou `--help`.
 
-### 1. Fluxo de Trabalho 1: Montador Absoluto (Requisito da Disciplina)
+### 🧩 Fluxo 1: Montador Absoluto (Requisito da Disciplina)
 
-Processa um único arquivo `.asm` e gera os arquivos `.o1` e `.o2`.
+Processa um único arquivo `.asm` para gerar `.o1` e `.o2`.
 
+**Sintaxe:**
+```bash
+./executavel/compilador.exe [arquivo.asm]
+```
+
+**Exemplo:**
 ```bash
 ./executavel/compilador.exe exemplos/fibonacci.asm
 ```
 
 **Saídas Geradas:**
-- `executavel/fibonacci.pre`
-- `executavel/fibonacci.o1`
-- `executavel/fibonacci.o2`
+- `executavel/fibonacci.pre` — Após o pré-processamento  
+- `executavel/fibonacci.o1` — Código objeto intermediário e lista de pendências  
+- `executavel/fibonacci.o2` — Código absoluto final, resolvido para o endereço 0
 
-> ⚠️ O arquivo `.o2` é apenas para o modo absoluto e não é compatível com o `simulador.exe`.
+> ⚠️ O arquivo `.o2` é um formato simples e **não é compatível** com o `simulador.exe` atual, que espera o formato `.exe` relocável.
 
------
+---
 
-### 2. Fluxo de Trabalho 2: Cadeia de Ferramentas Completa
+### 🧩 Fluxo 2: Cadeia Completa (Montar → Ligar → Simular)
 
 #### Etapa 1: Montar Módulos (Modo Relocável)
 
+Use o flag `-c` para gerar `.obj` relocáveis, habilitando `PUBLIC` e `EXTERN`.
+
+**Sintaxe:**
+```bash
+./executavel/compilador.exe -c [modulo1.asm]
+./executavel/compilador.exe -c [modulo2.asm]
+```
+**Exemplo:**
 ```bash
 ./executavel/compilador.exe -c exemplos/modulo_a.asm
 ./executavel/compilador.exe -c exemplos/modulo_b.asm
 ./executavel/compilador.exe -c exemplos/modulo_c.asm
 ```
 
-**Saídas Geradas:** `executavel/modulo_a.obj`, `executavel/modulo_b.obj`, `executavel/modulo_c.obj`
-
 #### Etapa 2: Ligar Módulos
 
+Flags:
+- `-o [arquivo.exe]` → nome do executável final  
+- `-m [arquivo.map]` → nome do log de ligação
+
+**Sintaxe:**
+```bash
+./executavel/ligador.exe -o [saida.exe] -m [saida.map] [modulo1.obj] [modulo2.obj] ...
+```
+**Exemplo:**
 ```bash
 ./executavel/ligador.exe -o executavel/area.exe -m executavel/area.map executavel/modulo_a.obj executavel/modulo_b.obj executavel/modulo_c.obj
 ```
 
-**Saídas Geradas:** `executavel/area.exe`, `executavel/area.map`
+**Saídas Geradas:**
+- `executavel/area.exe` — Programa final  
+- `executavel/area.map` — Log detalhado de ligação
 
 #### Etapa 3: Simular o Executável Final
 
+O `simulador.exe` carrega o programa e aplica o endereço base.
+
+**Sintaxe:**
+```bash
+./executavel/simulador.exe [arquivo.exe] [endereco_base_opcional]
+```
+**Exemplo (carregando em 8097):**
+```bash
+./executavel/simulador.exe executavel/area.exe 8097
+```
+**Exemplo (carregando em matrícula):**
 ```bash
 ./executavel/simulador.exe executavel/area.exe 211028097
 ```
 
-**Saída Gerada:** `area.log` (com desmontagem e execução).
+**Saída Gerada:**  
+`area.log` — desmontagem da memória e log da execução  
+(exemplo: `OUTPUT (do endereço 211028191): 50`)
 
 #### Etapa 4: Depuração (Opcional)
 
-# Gera trace detalhado
+Flags:
+- `-d` → log detalhado (trace)
+- `-dump` → apenas desmonta a memória
+
+**Sintaxe:**
 ```bash
-./executavel/simulador.exe -d executavel/area.exe 211028097
-```
+# Log detalhado da execução
+./executavel/simulador.exe -d [arquivo.exe] [endereco_base]
+
 # Apenas desmonta a memória
+./executavel/simulador.exe -dump [arquivo.exe] [endereco_base]
+```
+
+**Exemplo:**
 ```bash
-./executavel/simulador.exe -dump executavel/area.exe 211028097
+./executavel/simulador.exe -d executavel/area.exe 8097
 ```
 
