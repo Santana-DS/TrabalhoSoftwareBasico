@@ -107,11 +107,11 @@ Para ver a ajuda de qualquer comando, use `-h` ou `--help`.
 ### 🧩 Fluxo 1: Montador Absoluto (Requisito da Disciplina)
 
 Processa um único arquivo `.asm` para gerar `.o1` e `.o2`.
-Supondo que "arquivo.asm" esteja na pasta "/executavel"
+Supondo que "arquivo.asm" esteja na pasta "/executavel".
 
 **Sintaxe:**
 ```bash
-./executavel/compilador.exe ./executavel/arquivo.asm
+./executavel/compilador.exe ./executavel/[arquivo.asm]
 ```
 
 **Exemplo:**
@@ -173,18 +173,13 @@ O `simulador.exe` carrega o programa e aplica o endereço base.
 ```bash
 ./executavel/simulador.exe [arquivo.exe] [endereco_base_opcional]
 ```
-**Exemplo (carregando em 8097):**
-```bash
-./executavel/simulador.exe executavel/area.exe 8097
-```
-**Exemplo (carregando em matrícula):**
+**Exemplo (carregando no endereço 211028097 (nº de matrícula)):**
 ```bash
 ./executavel/simulador.exe executavel/area.exe 211028097
 ```
 
 **Saída Gerada:**  
-`area.log` — desmontagem da memória e log da execução  
-(exemplo: `OUTPUT (do endereço 211028191): 50`)
+`area.log` — **código máquina final ligado e carregado**, desmontagem da memória, log da execução.
 
 #### Etapa 4: Depuração (Opcional)
 
@@ -203,6 +198,6 @@ Flags:
 
 **Exemplo:**
 ```bash
-./executavel/simulador.exe -d executavel/area.exe 8097
+./executavel/simulador.exe -d executavel/area.exe 21028097
 ```
 
