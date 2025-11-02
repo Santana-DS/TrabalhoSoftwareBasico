@@ -1,7 +1,6 @@
 -----
 
 
-```
 # 🚀 Montador de Passagem Única & Cadeia de Ferramentas - Disciplina de Software Básico
 
 ## 📖 Visão Geral
