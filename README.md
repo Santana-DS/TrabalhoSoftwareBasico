@@ -107,10 +107,11 @@ Para ver a ajuda de qualquer comando, use `-h` ou `--help`.
 ### 🧩 Fluxo 1: Montador Absoluto (Requisito da Disciplina)
 
 Processa um único arquivo `.asm` para gerar `.o1` e `.o2`.
+Supondo que "arquivo.asm" esteja na pasta "/executavel"
 
 **Sintaxe:**
 ```bash
-./executavel/compilador.exe [arquivo.asm]
+./executavel/compilador.exe ./executavel/arquivo.asm
 ```
 
 **Exemplo:**
