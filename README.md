@@ -145,8 +145,6 @@ Processa um único arquivo `.asm` e gera os arquivos `.o1` e `.o2`.
 #### Etapa 3: Simular o Executável Final
 
 ```bash
-./executavel/simulador.exe executavel/area.exe 8097
-# ou
 ./executavel/simulador.exe executavel/area.exe 211028097
 ```
 
@@ -154,11 +152,12 @@ Processa um único arquivo `.asm` e gera os arquivos `.o1` e `.o2`.
 
 #### Etapa 4: Depuração (Opcional)
 
-```bash
 # Gera trace detalhado
-./executavel/simulador.exe -d executavel/area.exe 8097
-
+```bash
+./executavel/simulador.exe -d executavel/area.exe 211028097
+```
 # Apenas desmonta a memória
-./executavel/simulador.exe -dump executavel/area.exe 8097
+```bash
+./executavel/simulador.exe -dump executavel/area.exe 211028097
 ```
 
