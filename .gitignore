@@ -1,14 +1,26 @@
-```
-# Arquivos executaveis e de compilacao
-*.exe
+# Arquivos de compilacao (padrão)
 *.o
 *.out
 
- # Pasta de executaveis
- executavel/
+#
+# Arquivos gerados pela nossa cadeia de ferramentas
+# Todos são gerados dentro da pasta /executavel/
+#
 
- # Arquivos de saida do nosso compilador
- *.pre
- *.ol
- *.02
- ```
+# 1. Os executaveis que compilamos (Compilador, Ligador, Simulador)
+executavel/compilador.exe
+executavel/ligador.exe
+executavel/simulador.exe
+
+# 2. Saidas do Montador (Fluxo 1 e 2)
+executavel/*.pre
+executavel/*.o1
+executavel/*.o2
+executavel/*.obj
+
+# 3. Saidas do Ligador
+executavel/*.map
+executavel/*.exe
+
+# 4. Saidas do Simulador
+executavel/*.log
